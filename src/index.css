@@ -7,49 +7,48 @@
 }
 
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-
-  color: #302119;
-  background: #f0dcc0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1d3658;
+  background: #f2faef;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Movo — Sunset Console */
-  --movo-bg: #f0dcc0;
-  --movo-surface: #f7e7d0;
-  --movo-surface-raised: #ead0ad;
-  --movo-border: rgba(86, 52, 33, 0.16);
-  --movo-border-strong: rgba(86, 52, 33, 0.26);
-  --movo-ivory: #302119;
-  --movo-muted: #756357;
-  --movo-dim: #988678;
-  --movo-amber: #c96f43;
-  --movo-violet: #9b7964;
-  --movo-teal: #718d86;
-  --movo-cream: #fbedd9;
-  --movo-paper: #f1dfc7;
-  --movo-brown: #5d3524;
-  --movo-brown-deep: #43271b;
-  --movo-orange-soft: #de956a;
-  --movo-sand: #d4b28a;
-  --movo-shadow: rgba(73, 42, 27, 0.08);
+  --movo-bg: #f2faef;
+  --movo-surface: #fffdf9;
+  --movo-surface-raised: #edf7f4;
+  --movo-border: rgba(29, 54, 88, 0.12);
+  --movo-border-strong: rgba(29, 54, 88, 0.20);
+  --movo-ivory: #1d3658;
+  --movo-muted: #5d6f82;
+  --movo-dim: #8a97a6;
+  --movo-amber: #e63746;
+  --movo-violet: #447a9c;
+  --movo-teal: #a7dadc;
+  --movo-cream: #f2faef;
+  --movo-paper: #e8f3f0;
+  --movo-brown: #294f70;
+  --movo-brown-deep: #193553;
+  --movo-orange-soft: #ef6d78;
+  --movo-sand: #dceee8;
+  --movo-shadow: rgba(29, 54, 88, 0.08);
 }
 
 * { box-sizing: border-box; }
 html { min-width: 320px; min-height: 100%; background: var(--movo-bg); }
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 79% 7%, rgba(216, 133, 87, 0.11), transparent 26%),
-    radial-gradient(circle at 14% 90%, rgba(112, 143, 134, 0.08), transparent 22%),
-    var(--movo-bg);
+    radial-gradient(circle at 86% 2%, rgba(167, 218, 220, 0.34), transparent 23%),
+    radial-gradient(circle at 14% 92%, rgba(230, 55, 70, 0.08), transparent 21%),
+    linear-gradient(140deg, #f8fcf3 0%, #f2faef 56%, #edf6f1 100%);
   color: var(--movo-ivory);
 }
+
 button, input, textarea, select { font: inherit; }
 button { border: 0; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
@@ -59,20 +58,32 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 #root { min-height: 100vh; }
-.hero-copy h1, .section-heading-row h2, .memory-card h3, .brand-mark, .orbit-core span {
-  font-family: "Monograph", sans-serif;
+
+/* Keep Movo's type system consistent everywhere. */
+.hero-copy h1,
+.section-heading-row h2,
+.memory-card h3,
+.page-title,
+.brand-name,
+.mobile-brand .brand-name,
+.brand-spark,
+.brand-mark,
+.orbit-core span {
+  font-family: "Monograph", sans-serif !important;
   font-weight: 400;
   letter-spacing: 0.01em;
 }
-::selection { background: rgba(201, 111, 67, 0.24); color: var(--movo-ivory); }
+
+::selection { background: rgba(230, 55, 70, 0.20); color: #1d3658; }
+
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.22;
   background-image:
-    repeating-linear-gradient(0deg, rgba(91, 55, 34, 0.018) 0, rgba(91, 55, 34, 0.018) 1px, transparent 1px, transparent 4px),
-    repeating-linear-gradient(90deg, rgba(91, 55, 34, 0.014) 0, rgba(91, 55, 34, 0.014) 1px, transparent 1px, transparent 5px);
+    repeating-linear-gradient(0deg, rgba(29, 54, 88, 0.018) 0, rgba(29, 54, 88, 0.018) 1px, transparent 1px, transparent 5px),
+    repeating-linear-gradient(90deg, rgba(230, 55, 70, 0.012) 0, rgba(230, 55, 70, 0.012) 1px, transparent 1px, transparent 7px);
 }

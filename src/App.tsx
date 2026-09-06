@@ -2767,6 +2767,30 @@ function App() {
     replenishSuggestions();
   };
 
+  const handleRemoveFromLibrary = async (item: MediaItem) => {
+    const removedFromDatabase = await removeUserMedia(item);
+
+    if (!removedFromDatabase) {
+      setActionMessage(`Couldn't remove ${item.title}. Please try again.`);
+      return;
+    }
+
+    setWatchlistItems((current) => current.filter((existing) => existing.id !== item.id));
+    setWatchedItems((current) => current.filter((existing) => existing.id !== item.id));
+    setSkippedItems((current) => current.filter((existing) => existing.id !== item.id));
+    setWatchedMeta((current) => {
+      const next = { ...current };
+      delete next[item.id];
+      return next;
+    });
+
+    if (pendingRatingItem?.id === item.id) {
+      closeCustomRatingPanel();
+    }
+
+    setActionMessage(`${item.title} removed from Movo.`);
+  };
+
   const refreshSuggestions = async () => {
     await loadSuggestions(true);
   };
@@ -4109,6 +4133,7 @@ function App() {
                         <button type="button" className="saved-media-action-button saved-media-action-primary" onClick={() => void handleWatched(item)}>✓ Watched</button>
                         <button type="button" className="saved-media-action-button saved-media-feel-button" onClick={() => pendingRatingItem?.id === item.id ? closeCustomRatingPanel() : openCustomRatingForItem(item)}>{pendingRatingItem?.id === item.id ? "× Close" : "♡ Feel"}</button>
                         <button type="button" className="saved-media-action-button" onClick={() => void handleSkip(item)}>× Skip</button>
+                        <button type="button" className="saved-media-action-button saved-media-action-remove" onClick={() => void handleRemoveFromLibrary(item)}>− Remove</button>
                       </div>
                       {pendingRatingItem?.id === item.id && ratingMode === "custom" && (
                         <div className="saved-inline-custom-rating" onClick={(event) => event.stopPropagation()}>
@@ -4184,6 +4209,7 @@ function App() {
                         <button type="button" className="saved-media-action-button saved-media-action-primary" onClick={() => void handleWatched(item)}>✓ Watched</button>
                         <button type="button" className="saved-media-action-button saved-media-feel-button" onClick={() => pendingRatingItem?.id === item.id ? closeCustomRatingPanel() : openCustomRatingForItem(item)}>{pendingRatingItem?.id === item.id ? "× Close" : "♡ Feel"}</button>
                         <button type="button" className="saved-media-action-button" onClick={() => void handleWatchlist(item)}>＋ Watchlist</button>
+                        <button type="button" className="saved-media-action-button saved-media-action-remove" onClick={() => void handleRemoveFromLibrary(item)}>− Remove</button>
                       </div>
                       {pendingRatingItem?.id === item.id && ratingMode === "custom" && (
                         <div className="saved-inline-custom-rating" onClick={(event) => event.stopPropagation()}>
@@ -4332,7 +4358,8 @@ function App() {
                             ))}
                           </div>
                         )}
-                        <button type="button" className="history-feel-button" onClick={() => pendingRatingItem?.id === item.id ? closeCustomRatingPanel() : openCustomRatingForItem(item)}>{pendingRatingItem?.id === item.id ? "× Close" : "♡ Feel"}</button>
+                        <button type="button" className="history-feel-button" onClick={(event) => { event.stopPropagation(); pendingRatingItem?.id === item.id ? closeCustomRatingPanel() : openCustomRatingForItem(item); }}>{pendingRatingItem?.id === item.id ? "× Close" : "♡ Feel"}</button>
+                        <button type="button" className="history-remove-button" onClick={(event) => { event.stopPropagation(); void handleRemoveFromLibrary(item); }}>− Remove</button>
                       </div>
 
                       {pendingRatingItem?.id === item.id && ratingMode === "custom" && (
@@ -4455,8 +4482,15 @@ function App() {
     <div className="movo-app">
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-mark">M</div>
-          <span className="brand-name">Movo</span>
+          <div className="brand-logo-row">
+            <span className="brand-name">Movo</span>
+            <span className="brand-spark">✦</span>
+          </div>
+          <div className="brand-tagline">
+            GOOD<br />
+            MOVIES<br />
+            BRIGHTER DAYS
+          </div>
         </div>
 
         <nav className="main-nav">
@@ -4519,7 +4553,7 @@ function App() {
           }
 
           .history-rating-stars .empty {
-            color: var(--movo-sand, #d4b28a);
+            color: var(--movo-sand, #a7dadc);
             opacity: 0.65;
           }
 
@@ -4596,7 +4630,7 @@ function App() {
           .inline-rating-save {
             border: 1px solid var(--movo-amber);
             background: var(--movo-amber);
-            color: #fff7ef;
+            color: #f2faef;
           }
 
           .inline-rating-save:disabled {
@@ -4658,12 +4692,12 @@ function App() {
           }
 
           .suggestion-rating-star.filled {
-            color: #c96f43 !important;
+            color: #e63746 !important;
             opacity: 1;
           }
 
           .suggestion-rating-star.empty {
-            color: #c5a47e !important;
+            color: #71839a !important;
             opacity: 1;
           }
 
@@ -4695,9 +4729,9 @@ function App() {
           }
 
           .suggestion-rating-save {
-            border: 1px solid #c96f43 !important;
-            background: #c96f43 !important;
-            color: #fff7ef !important;
+            border: 1px solid #e63746 !important;
+            background: #e63746 !important;
+            color: #f2faef !important;
           }
 
           .suggestion-rating-save:disabled {
@@ -4734,8 +4768,21 @@ function App() {
           </div>
 
           <div className="topbar-actions">
-            <button className="icon-button" aria-label="Memory" onClick={() => navigateToView("memory")}>
-              ◌
+            <button
+              className="topbar-search-pill"
+              type="button"
+              onClick={() => {
+                if (currentView !== "home") navigateToView("home");
+                setHomeSearchOpen(true);
+                setHomeFilterOpen(false);
+              }}
+              aria-label="Search movies, series, and people"
+            >
+              <span>⌕</span>
+              <span>Search for movies, series, people...</span>
+            </button>
+            <button className="icon-button topbar-memory-button" aria-label="Memory" onClick={() => navigateToView("memory")}>
+              ♧
             </button>
             <button className="top-avatar" aria-label="Profile" onClick={() => navigateToView("settings")}>
               {profileInitial}
@@ -4838,6 +4885,15 @@ function App() {
                         >
                           × Skipped
                         </button>
+                        {getSavedStatusForItem(mediaDetails.id) && (
+                          <button
+                            type="button"
+                            className="saved-media-action-button saved-media-action-remove"
+                            onClick={() => void handleRemoveFromLibrary(convertDetailsToMediaItem(mediaDetails))}
+                          >
+                            − Remove from Movo
+                          </button>
+                        )}
                       </div>
                     </div>
 
